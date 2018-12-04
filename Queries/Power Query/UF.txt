@@ -1,0 +1,9 @@
+let
+    Fonte = Excel.Workbook(File.Contents("C:\Users\Fernanda\Desktop\TCC\excel\Valor do rendimento médio mensal da população de 10 anos ou mais de idade - Unidades da Federação (UF).xlsx"), null, true),
+    #"Valor do rendimento médio mensal da população de 10 anos ou mais de idade - Unidades da Federação (UF)_Sheet" = Fonte{[Item="Valor do rendimento médio mensal da população de 10 anos ou mais de idade - Unidades da Federação (UF)",Kind="Sheet"]}[Data],
+    #"Tipo Alterado" = Table.TransformColumnTypes(#"Valor do rendimento médio mensal da população de 10 anos ou mais de idade - Unidades da Federação (UF)_Sheet",{{"Column1", type text}, {"Column2", Int64.Type}, {"Column3", Int64.Type}, {"Column4", Int64.Type}, {"Column5", Int64.Type}, {"Column6", Int64.Type}, {"Column7", Int64.Type}, {"Column8", Int64.Type}, {"Column9", Int64.Type}, {"Column10", Int64.Type}, {"Column11", Int64.Type}, {"Column12", Int64.Type}, {"Column13", Int64.Type}, {"Column14", Int64.Type}, {"Column15", Int64.Type}}),
+    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Tipo Alterado", [PromoteAllScalars=true]),
+    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"UF", type text}, {"2001", Int64.Type}, {"2002", Int64.Type}, {"2003", Int64.Type}, {"2004", Int64.Type}, {"2005", Int64.Type}, {"2006", Int64.Type}, {"2007", Int64.Type}, {"2008", Int64.Type}, {"2009", Int64.Type}, {"2011", Int64.Type}, {"2012", Int64.Type}, {"2013", Int64.Type}, {"2014", Int64.Type}, {"2015", Int64.Type}}),
+    #"Outras Colunas Removidas" = Table.SelectColumns(#"Tipo Alterado1",{"UF"})
+in
+    #"Outras Colunas Removidas"

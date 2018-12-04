@@ -1,0 +1,8 @@
+let
+    Fonte = Excel.Workbook(File.Contents("C:\Users\Fernanda\Desktop\TCC\excel\ANO.xlsx"), null, true),
+    Planilha1_Sheet = Fonte{[Item="Planilha1",Kind="Sheet"]}[Data],
+    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Planilha1_Sheet, [PromoteAllScalars=true]),
+    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"ANO", Int64.Type}}),
+    #"Colunas Renomeadas" = Table.RenameColumns(#"Tipo Alterado",{{"ANO", "Ano"}})
+in
+    #"Colunas Renomeadas"

@@ -1,0 +1,14 @@
+let
+    Fonte = Excel.Workbook(File.Contents("C:\Users\Fernanda\Desktop\TCC\excel\Abandono escolar por série - Ensino Médio ( série nova) - total.xlsx"), null, true),
+    #"Abandono escolar por série - Ensino Médio ( série nova) - total_Sheet" = Fonte{[Item="Abandono escolar por série - Ensino Médio ( série nova) - total",Kind="Sheet"]}[Data],
+    #"Tipo Alterado" = Table.TransformColumnTypes(#"Abandono escolar por série - Ensino Médio ( série nova) - total_Sheet",{{"Column1", type text}, {"Column2", type text}, {"Column3", type number}, {"Column4", type number}, {"Column5", type number}, {"Column6", type number}, {"Column7", type number}, {"Column8", type number}, {"Column9", type number}, {"Column10", type number}, {"Column11", type number}, {"Column12", type number}}),
+    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Tipo Alterado", [PromoteAllScalars=true]),
+    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"UF", type text}, {"OPCAO", type text}, {"2007", type number}, {"2008", type number}, {"2009", type number}, {"2010", type number}, {"2011", type number}, {"2012", type number}, {"2013", type number}, {"2014", type number}, {"2015", type number}, {"2016", type number}}),
+    #"Somente as Colunas Selecionadas Foram Transformadas em Linhas" = Table.Unpivot(#"Tipo Alterado1", {"2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016"}, "Atributo", "Valor"),
+    #"Colunas Renomeadas" = Table.RenameColumns(#"Somente as Colunas Selecionadas Foram Transformadas em Linhas",{{"Atributo", "Ano"}, {"Valor", "Percentual"}}),
+    #"Erros Substituídos" = Table.ReplaceErrorValues(#"Colunas Renomeadas", {{"Percentual", -1}}),
+    #"Valor Substituído" = Table.ReplaceValue(#"Erros Substituídos","M, G,","Mato Grosso",Replacer.ReplaceText,{"UF"}),
+    #"Valor Substituído1" = Table.ReplaceValue(#"Valor Substituído","R, G,","Rio Grande",Replacer.ReplaceText,{"UF"}),
+    #"Colunas Renomeadas1" = Table.RenameColumns(#"Valor Substituído1",{{"Percentual", "abandono escolar - percentual"}})
+in
+    #"Colunas Renomeadas1"

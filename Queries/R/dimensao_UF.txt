@@ -1,0 +1,5 @@
+library(RODBC)
+conn <- odbcDriverConnect("driver=SQL Server; server=DESKTOP-T3CKJQK;Database=TCC")
+odbcClearError(conn)
+sqlSave(conn, dataset, tablename="dimensao_UF", rownames=False, safer=False, append=TRUE)
+close(conn)

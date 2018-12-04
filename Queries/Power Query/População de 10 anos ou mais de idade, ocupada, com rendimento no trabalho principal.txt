@@ -1,0 +1,15 @@
+let
+    Fonte = Excel.Workbook(File.Contents("C:\Users\Fernanda\Desktop\TCC\excel\População de 10 anos ou mais de idade, ocupada, com rendimento no trabalho principal, por classes de rendimento mensal ( em sal. mín.).xlsx"), null, true),
+    series_historicas_Sheet = Fonte{[Item="series_historicas",Kind="Sheet"]}[Data],
+    #"Tipo Alterado" = Table.TransformColumnTypes(series_historicas_Sheet,{{"Column1", type text}, {"Column2", type text}, {"Column3", type number}, {"Column4", type number}, {"Column5", type number}, {"Column6", type number}, {"Column7", type number}, {"Column8", type number}, {"Column9", type number}, {"Column10", type number}, {"Column11", type number}, {"Column12", type number}, {"Column13", type number}, {"Column14", type any}, {"Column15", type any}, {"Column16", type any}}),
+    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(#"Tipo Alterado", [PromoteAllScalars=true]),
+    #"Somente as Colunas Selecionadas Foram Transformadas em Linhas" = Table.Unpivot(#"Cabeçalhos Promovidos", {"2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2011", "2012", "2013", "2014", "2015"}, "Atributo", "Valor"),
+    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Somente as Colunas Selecionadas Foram Transformadas em Linhas",{{"Valor", type text}}),
+    #"Colunas Renomeadas" = Table.RenameColumns(#"Tipo Alterado1",{{"Valor", "Percentual"}}),
+    #"Tipo Alterado2" = Table.TransformColumnTypes(#"Colunas Renomeadas",{{"Percentual", type number}}),
+    #"Erros Substituídos" = Table.ReplaceErrorValues(#"Tipo Alterado2", {{"Percentual", -1}}),
+    #"Colunas Renomeadas1" = Table.RenameColumns(#"Erros Substituídos",{{"Atributo", "Ano"}}),
+    #"Erros Substituídos1" = Table.ReplaceErrorValues(#"Colunas Renomeadas1", {{"Percentual", -1}}),
+    #"Colunas Renomeadas2" = Table.RenameColumns(#"Erros Substituídos1",{{"Percentual", "população por classe de rendimento Percentual"}})
+in
+    #"Colunas Renomeadas2"
